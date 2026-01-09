@@ -25,29 +25,7 @@ A comprehensive video sharing platform with advanced role-based access control (
 
 ## 🎯 Problem Statement
 
-Organizations and individuals need a secure, collaborative video sharing platform that addresses the following challenges:
-
-### Core Problems
-
-1. **Access Control Complexity**
-   - Traditional video platforms offer limited granular access control
-   - Organizations struggle to manage video permissions across teams
-   - No unified solution for both individual users and organizational accounts
-
-2. **Content Moderation**
-   - Manual video review is time-consuming and error-prone
-   - Lack of automated sensitivity detection before content goes live
-   - Organizations need to ensure compliance with content policies
-
-3. **Collaboration Barriers**
-   - Difficult to share videos with specific groups while maintaining different permission levels
-   - No clear distinction between viewers, editors, and administrators
-   - Limited real-time feedback during upload and processing
-
-4. **Multi-Tenant Challenges**
-   - Organizations need isolated spaces while allowing inter-organizational collaboration
-   - Individual users need independence while optionally belonging to organizations
-   - Group-based sharing requires complex permission inheritance
+Organizations and individuals need a collaborative video platform that goes beyond basic sharing. The challenge is to build a system where users and organizations coexist as first-class entities, videos can be shared with granular permissions (viewer/editor/admin) at personal, organizational, and group levels, and the platform automatically moderates content through real-time sensitivity detection. The core technical challenge lies in designing an efficient MongoDB schema and RBAC system that resolves multi-path access conflicts while maintaining sub-500ms query performance for video libraries and ensuring complete security isolation between tenants.
 
 ### Target Users
 
