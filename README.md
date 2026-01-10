@@ -1,12 +1,22 @@
 ### VideoConnect+ 🎥
 
-An Enterprise-Grade Video Sharing Platform with RBAC & Real-Time Sensitivity Detection
+An Enterprise-Grade Video Sharing Platform with AI-Powered Sensitivity Detection
+
+## 🌐 Live Demo
+
+**Frontend:** [https://video-sensitivity-streaming-applica.vercel.app/](https://video-sensitivity-streaming-applica.vercel.app/)  
+**Backend API:** [https://video-sensitivity-streaming-application.onrender.com](https://video-sensitivity-streaming-application.onrender.com)
 
 ### 📌 Overview
 
-VideoConnect+ is a secure, scalable video-sharing platform designed for individuals, teams, and organizations. It provides fine-grained role-based access control (RBAC), real-time upload tracking, and intelligent video sensitivity detection to ensure content safety and controlled collaboration.
+VideoConnect+ is a secure, scalable video-sharing platform designed for individuals, teams, and organizations. It features:
+- **AI-Powered Content Moderation** using Google Video Intelligence API
+- **Fine-grained Role-Based Access Control (RBAC)**
+- **Real-time Upload Tracking** with Socket.IO
+- **Cloud Storage** with Cloudinary CDN
+- **Automated Sensitivity Detection** to ensure content safety
 
-The platform is built with performance, security, and extensibility as first-class concerns.
+The platform is built with performance, security, and extensibility as first-class concerns, deployed on production-grade cloud infrastructure.
 
 ### 📑 Table of Contents
 
@@ -323,12 +333,222 @@ erDiagram
 - **ESLint**: Code linting
 - **Prettier**: Code formatting
 
-### Infrastructure (Current/Future)
-- **Local Storage**: Development file storage
-- **AWS S3** *(planned)*: Production video storage
-- **Redis** *(planned)*: Session management and caching
-- **Docker** *(planned)*: Containerization
-- **Nginx** *(planned)*: Reverse proxy and load balancing
+### AI & Cloud Services
+| Service | Purpose |
+|---------|---------|
+| **Google Cloud Video Intelligence API** | AI-powered video content analysis and sensitivity detection |
+| **Cloudinary** | Cloud video storage and CDN delivery |
+| **MongoDB Atlas** | Cloud database hosting (production) |
+
+### Production Infrastructure
+| Service | Provider | Tier | Purpose |
+|---------|----------|------|---------|
+| **Frontend Hosting** | Vercel | Free | Static site deployment with CDN |
+| **Backend API** | Render | Free | Node.js application hosting |
+| **Database** | MongoDB Atlas | Free (M0) | 512 MB cloud database |
+| **Video Storage** | Cloudinary | Free | 25 GB storage + 25 GB bandwidth/month |
+| **Video Analysis** | Google Cloud | Free | First 1,000 minutes/month |
+
+---
+
+## 🤖 Google Video Intelligence API Integration
+
+### Overview
+VideoConnect+ uses **Google Cloud Video Intelligence API** for automated content moderation and sensitivity detection. The API analyzes uploaded videos in real-time to detect:
+- Explicit content
+- Violence
+- Suggestive content
+- Other sensitive material
+
+### Setup Instructions
+
+#### 1. Create Google Cloud Project
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create a new project or select existing one
+3. Enable billing (required for API access, but free tier available)
+
+#### 2. Enable Video Intelligence API
+```bash
+# Using gcloud CLI
+gcloud services enable videointelligence.googleapis.com
+
+# Or visit: https://console.cloud.google.com/apis/library/videointelligence.googleapis.com
+```
+
+#### 3. Create Service Account
+1. Navigate to **IAM & Admin** → **Service Accounts**
+2. Click **Create Service Account**
+3. Name: `videoconnect-analyzer`
+4. Grant role: **Video Intelligence API User**
+5. Click **Create Key** → Choose **JSON**
+6. Download the credentials file
+
+#### 4. Configure Backend
+Place the credentials file in your backend directory:
+```bash
+backend/
+├── google-credentials.json  # Your downloaded credentials
+├── src/
+└── ...
+```
+
+Update `backend/.env`:
+```env
+GOOGLE_APPLICATION_CREDENTIALS=./google-credentials.json
+```
+
+### How It Works
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant Cloudinary
+    participant GoogleAI
+
+    User->>Frontend: Upload Video
+    Frontend->>Backend: POST /api/videos/upload
+    Backend->>Cloudinary: Store Video
+    Cloudinary-->>Backend: Video URL
+    Backend-->>Frontend: Upload Complete (processing)
+    Backend->>GoogleAI: Analyze Video
+    GoogleAI-->>Backend: Analysis Results
+    Backend-->>Frontend: Sensitivity Result (safe/flagged)
+    Frontend-->>User: Display Status
+```
+
+### Analysis Flow
+1. **Upload**: Video uploaded to Cloudinary
+2. **Trigger**: Backend initiates sensitivity check
+3. **Analysis**: Google API analyzes video content
+4. **Processing**: Results parsed for explicit content
+5. **Classification**: Video marked as `safe` or `flagged`
+6. **Notification**: User notified via Socket.IO in real-time
+
+### API Features Used
+- **Explicit Content Detection**: Identifies adult or violent content
+- **Label Detection**: Categorizes video content 
+- **Shot Change Detection**: Analyzes scene transitions
+- **Confidence Scoring**: Provides accuracy percentage
+
+### Costs
+- **Free Tier**: 1,000 minutes of video analysis per month
+- **Beyond Free**: $0.10 per minute
+- **Current Implementation**: Mock fallback if API unavailable
+
+---
+
+## 🚀 Production Deployment
+
+### Architecture
+
+```mermaid
+graph TB
+    subgraph "Client Side"
+        A[User Browser]
+    end
+    
+    subgraph "Vercel - Frontend CDN"
+        B[React App]
+        C[Static Assets]
+    end
+    
+    subgraph "Render - Backend"
+        D[Express API]
+        E[Socket.IO Server]
+        F[Authentication]
+    end
+    
+    subgraph "Cloud Services"
+        G[MongoDB Atlas]
+        H[Cloudinary CDN]
+        I[Google Video AI]
+    end
+    
+    A --> B
+    B --> D
+    D --> G
+    D --> H
+    D --> I
+    E -.WebSocket.-> A
+```
+
+### Deployment Steps
+
+#### 1. MongoDB Atlas Setup
+1. Create cluster at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
+2. Choose **M0 Free Tier**
+3. Create database user
+4. Whitelist IP: `0.0.0.0/0` (all IPs)
+5. Get connection string
+
+#### 2. Cloudinary Setup
+1. Sign up at [cloudinary.com](https://cloudinary.com/)
+2. Get credentials from dashboard:
+   - Cloud Name
+   - API Key
+   - API Secret
+
+#### 3. Backend Deployment (Render)
+1. Push code to GitHub
+2. Create new **Web Service** on [render.com](https://render.com)
+3. Connect GitHub repository
+4. Configure:
+   - **Root Directory**: `backend`
+   - **Build Command**: `cd backend && npm install --production=false && npm run build`
+   - **Start Command**: `cd backend && npm start`
+   - **Instance Type**: Free
+
+5. Set Environment Variables:
+```env
+PORT=10000
+NODE_ENV=production
+MONGODB_URI=<your_mongodb_atlas_uri>
+JWT_SECRET=<random_64_char_string>
+FRONTEND_URL=https://your-app.vercel.app
+CLOUDINARY_CLOUD_NAME=<your_cloud_name>
+CLOUDINARY_API_KEY=<your_api_key>
+CLOUDINARY_API_SECRET=<your_api_secret>
+```
+
+#### 4. Frontend Deployment (Vercel)
+1. Install Vercel CLI: `npm i -g vercel`
+2. Or use Vercel Dashboard
+3. Configure:
+   - **Framework**: Vite
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+
+4. Set Environment Variables:
+```env
+VITE_API_URL=https://your-backend.onrender.com/api
+VITE_SOCKET_URL=https://your-backend.onrender.com
+```
+
+5. Deploy:
+```bash
+cd frontend
+vercel --prod
+```
+
+#### 5. Final Configuration
+- Update `FRONTEND_URL` in Render with your Vercel URL
+- Test CORS by accessing the app
+- Verify Socket.IO connection in browser console
+
+### Free Tier Limitations
+
+| Service | Limitation | Workaround |
+|---------|------------|------------|
+| **Render** | Sleeps after 15 min inactivity | Use UptimeRobot for keep-alive |
+| **MongoDB Atlas** | 512 MB storage | Monitor usage, implement cleanup |
+| **Cloudinary** | 25 GB bandwidth/month | Optimize video sizes, use compression |
+| **Google Video AI** | 1,000 min/month | Use mock implementation as fallback |
+
+---
+
 
 ---
 
