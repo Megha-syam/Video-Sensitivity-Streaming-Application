@@ -119,7 +119,11 @@ const VideoPlayerPage: React.FC = () => {
   }
 
   const statusDisplay = getStatusDisplay(video.status);
-  const streamUrl = videoAPI.getStreamUrl(video._id);
+  // For Cloudinary videos (production), use the filePath directly
+  // For local videos (development), use the streaming endpoint
+  const streamUrl = video.filePath.startsWith('http') 
+    ? video.filePath  // Cloudinary URL
+    : videoAPI.getStreamUrl(video._id); // Local streaming endpoint
 
   return (
     <div className="video-player-page">
