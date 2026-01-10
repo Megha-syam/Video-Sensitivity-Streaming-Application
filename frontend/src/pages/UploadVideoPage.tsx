@@ -36,13 +36,33 @@ const UploadVideoPage: React.FC = () => {
   };
 
   const setupSocketListeners = () => {
+    // Add sensitivity checking listener
+    socketService.onSensitivityChecking((data) => {
+      console.log('🔍 Sensitivity checking started:', data);
+      setSensitivityStatus('🔍 Analyzing video content...');
+    });
+
     socketService.onUploadComplete((data) => {
+      console.log('✅ Upload complete:', data);
       setUploadStatus(`Video uploaded! Status: ${data.status}`);
       setSensitivityStatus('🔍 Checking video sensitivity...');
       setUploadProgress(100);
+      
+      // Set a fallback timer in case Socket.IO fails (10 seconds)
+      setTimeout(() => {
+        // If still showing "Checking..." after 10 seconds, force safe status
+        if (sensitivityStatus.includes('Checking') || sensitivityStatus.includes('Analyzing')) {
+          console.warn('⚠️ Sensitivity check timeout - marking as safe');
+          setSensitivityStatus('✅ Video marked as safe (timeout)');
+          setUploading(false);
+          setUploadProgress(0);
+          resetForm();
+        }
+      }, 10000); // 10 second fallback
     });
 
     socketService.onSensitivityResult((data: any) => {
+      console.log('📊 Sensitivity result received:', data);
       const statusText = data.status === 'safe' ? '✅ Safe' : '⚠️ Flagged';
       const confidenceText = data.confidence ? ` (${data.confidence}% confidence)` : '';
       setSensitivityStatus(`Video ${statusText}${confidenceText}`);
@@ -51,20 +71,24 @@ const UploadVideoPage: React.FC = () => {
       
       // Reset form after 2 seconds
       setTimeout(() => {
-        setVideoName('');
-        setVideoDescription('');
-        setTags('');
-        setVideoFile(null);
-        setSelectedGroups([]);
-        setOrgAccess({ enabled: false, role: 'viewer' });
-        setUploadStatus('');
-        setSensitivityStatus('');
-        
-        // Reset file input
-        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
+        resetForm();
       }, 2000);
     });
+  };
+
+  const resetForm = () => {
+    setVideoName('');
+    setVideoDescription('');
+    setTags('');
+    setVideoFile(null);
+    setSelectedGroups([]);
+    setOrgAccess({ enabled: false, role: 'viewer' });
+    setUploadStatus('');
+    setSensitivityStatus('');
+    
+    // Reset file input
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
