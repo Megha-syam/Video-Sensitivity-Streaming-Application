@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { videoAPI, groupAPI } from '../services/api.service';
 import socketService from '../services/socket.service';
@@ -7,6 +8,7 @@ import './Upload.css';
 
 const UploadVideoPage: React.FC = () => {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [videoName, setVideoName] = useState('');
   const [videoDescription, setVideoDescription] = useState('');
   const [tags, setTags] = useState('');
@@ -48,17 +50,21 @@ const UploadVideoPage: React.FC = () => {
       setSensitivityStatus('🔍 Checking video sensitivity...');
       setUploadProgress(100);
       
-      // Set a fallback timer in case Socket.IO fails (10 seconds)
+      // Set a fallback timer in case Socket.IO fails (5 seconds - reduced for faster feedback)
       setTimeout(() => {
-        // If still showing "Checking..." after 10 seconds, force safe status
+        // If still showing "Checking..." after 5 seconds, force safe status
         if (sensitivityStatus.includes('Checking') || sensitivityStatus.includes('Analyzing')) {
           console.warn('⚠️ Sensitivity check timeout - marking as safe');
           setSensitivityStatus('✅ Video marked as safe (timeout)');
           setUploading(false);
           setUploadProgress(0);
-          resetForm();
+          
+          // Redirect to library after timeout
+          setTimeout(() => {
+            navigate('/dashboard/library');
+          }, 1500);
         }
-      }, 10000); // 10 second fallback
+      },5000); // 5 second fallback (reduced from 10)
     });
 
     socketService.onSensitivityResult((data: any) => {
@@ -69,10 +75,11 @@ const UploadVideoPage: React.FC = () => {
       setUploading(false);
       setUploadProgress(0);
       
-      // Reset form after 2 seconds
+      // Show success message briefly, then redirect to library
       setTimeout(() => {
         resetForm();
-      }, 2000);
+        navigate('/dashboard/library');
+      }, 1500); // Redirect after 1.5 seconds
     });
   };
 
