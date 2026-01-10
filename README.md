@@ -1,40 +1,60 @@
-# VideoConnect+ 🎥
+### VideoConnect+ 🎥
 
-A comprehensive video sharing platform with advanced role-based access control (RBAC), real-time upload tracking, and intelligent video sensitivity detection.
+An Enterprise-Grade Video Sharing Platform with RBAC & Real-Time Sensitivity Detection
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
-![MongoDB](https://img.shields.io/badge/mongodb-7.0-green.svg)
-![React](https://img.shields.io/badge/react-18.2.0-blue.svg)
+### 📌 Overview
 
-## 📋 Table of Contents
+VideoConnect+ is a secure, scalable video-sharing platform designed for individuals, teams, and organizations. It provides fine-grained role-based access control (RBAC), real-time upload tracking, and intelligent video sensitivity detection to ensure content safety and controlled collaboration.
 
-- [Problem Statement](#problem-statement)
-- [Architecture & Solution](#architecture--solution)
-- [MongoDB Schema Design](#mongodb-schema-design)
-- [Tech Stack](#tech-stack)
-- [Our Solution](#our-solution)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [API Documentation](#api-documentation)
-- [Future Enhancements](#future-enhancements)
-- [Contributing](#contributing)
-- [License](#license)
+The platform is built with performance, security, and extensibility as first-class concerns.
 
----
+### 📑 Table of Contents
 
-## 🎯 Problem Statement
+Problem Statement
 
-Organizations and individuals need a collaborative video platform that goes beyond basic sharing. The challenge is to build a system where users and organizations coexist as first-class entities, videos can be shared with granular permissions (viewer/editor/admin) at personal, organizational, and group levels, and the platform automatically moderates content through real-time sensitivity detection. The core technical challenge lies in designing an efficient MongoDB schema and RBAC system that resolves multi-path access conflicts while maintaining sub-500ms query performance for video libraries and ensuring complete security isolation between tenants.
+Architecture & Solution
 
-### Target Users
+MongoDB Schema Design
 
-- **Organizations**: Companies needing internal video sharing with strict access controls
-- **Content Creators**: Individuals who want to share videos with specific audiences
-- **Teams**: Collaborative groups requiring role-based video management
-- **Moderators**: Users responsible for content review and approval
+Tech Stack
 
----
+Key Features
+
+Getting Started
+
+API Documentation
+
+Future Enhancements
+
+Contributing
+
+License
+
+### 🎯 Problem Statement
+
+Modern organizations require more than basic video sharing. They need:
+
+Multi-tenant support (users + organizations)
+
+Granular access control across users, groups, and organizations
+
+Real-time feedback during uploads
+
+Automated moderation through sensitivity detection
+
+Fast and secure video library queries (< 500ms)
+
+The key challenge is designing a MongoDB-optimized RBAC model that resolves multi-path permissions efficiently while maintaining strict tenant isolation.
+
+### 👥 Target Users
+
+Organizations – Secure internal video collaboration
+
+Content Creators – Controlled sharing with specific audiences
+
+Teams & Groups – Role-based collaboration
+
+Moderators – Review and approve sensitive content
 
 ## 🏗️ Architecture & Solution
 
@@ -729,170 +749,4 @@ socket.on('sensitivity:result', (data) => {
 });
 ```
 
----
 
-## 🔮 Future Enhancements
-
-### Phase 1: Core Improvements (Q1 2024)
-
-#### 1. Cloud Storage Integration
-- **AWS S3** for production video storage
-- **CloudFront CDN** for faster video delivery
-- Automatic thumbnail generation
-- Multi-resolution encoding (360p, 720p, 1080p)
-
-#### 2. ML-Based Sensitivity Detection
-- Integration with **AWS Rekognition** or **Google Video Intelligence**
-- Custom ML model for content classification
-- Automatic NSFW detection
-- Profanity detection in audio transcripts
-
-#### 3. Advanced Search
-- Full-text search with **Elasticsearch**
-- Search by tags, title, description
-- Filter by date range, status, uploader
-- Autocomplete suggestions
-
-### Phase 2: Collaboration Features (Q2 2024)
-
-#### 4. Comments & Annotations
-- Threaded comments on videos
-- Time-stamped annotations
-- @mentions for team members
-- Emoji reactions
-
-#### 5. Video Analytics
-- View count tracking
-- Watch time analytics
-- Audience engagement metrics
-- Export analytics reports
-
-#### 6. Notifications System
-- Email notifications for shares
-- In-app notification center
-- Push notifications (PWA)
-- Configurable notification preferences
-
-### Phase 3: Enterprise Features (Q3 2024)
-
-#### 7. Advanced RBAC
-- Custom role creation
-- Permission templates
-- Bulk permission management
-- Audit logs for access changes
-
-#### 8. Workflows & Approvals
-- Video approval workflows
-- Multi-level review process
-- Automated routing based on content
-- Reviewer assignment
-
-#### 9. Integration Capabilities
-- **SSO** with SAML/OAuth2
-- **Slack/Teams** integration
-- **Zapier** webhooks
-- REST API for external systems
-
-### Phase 4: Platform Enhancements (Q4 2024)
-
-#### 10. Live Streaming
-- Real-time video streaming
-- Interactive live chat
-- Recording of live sessions
-- Stream scheduling
-
-#### 11. Mobile Applications
-- Native iOS app
-- Native Android app
-- Offline download support
-- Mobile-optimized upload
-
-#### 12. AI Features
-- Automatic captioning/subtitles
-- Video summarization
-- Smart tagging suggestions
-- Content recommendations
-
-### Infrastructure & DevOps
-
-- **Docker** containerization
-- **Kubernetes** orchestration
-- **CI/CD** pipeline with GitHub Actions
-- **Monitoring** with Prometheus & Grafana
-- **Logging** with ELK stack
-- **Load balancing** with Nginx
-- **Caching** with Redis
-- **Database** replication and sharding
-
-### Performance Optimizations
-
-- Implement lazy loading for video library
-- Add service worker for offline functionality
-- Optimize bundle size with code splitting
-- Implement virtual scrolling for large lists
-- Add database query optimization
-- Implement rate limiting
-- Add request caching
-
-### Security Enhancements
-
-- Two-factor authentication (2FA)
-- IP whitelisting for organizations
-- DDoS protection
-- Content encryption at rest
-- Watermarking for sensitive videos
-- Security audit logging
-- GDPR compliance features
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Code Style
-
-- Follow TypeScript best practices
-- Use ESLint and Prettier
-- Write meaningful commit messages
-- Add tests for new features
-- Update documentation
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 Authors
-
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/yourusername)
-
----
-
-## 🙏 Acknowledgments
-
-- MongoDB team for excellent documentation
-- Socket.IO for real-time capabilities
-- React team for the amazing framework
-- All open-source contributors
-
----
-
-## 📞 Support
-
-For support, email support@videoconnect.com or join our Slack channel.
-
----
-
-**Made with ❤️ by the VideoConnect+ Team**
