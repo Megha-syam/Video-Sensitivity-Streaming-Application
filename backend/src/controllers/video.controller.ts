@@ -49,7 +49,7 @@ export const uploadVideo = async (req: AuthRequest, res: Response): Promise<void
 
     await video.save();
 
-    // Emit socket event for processing (will be handled by socket service)
+    // Emit upload complete event
     const io = req.app.get('io');
     if (io) {
       io.to(req.user._id.toString()).emit('upload:complete', {
@@ -57,18 +57,8 @@ export const uploadVideo = async (req: AuthRequest, res: Response): Promise<void
         status: 'processing',
       });
 
-      // Simulate video sensitivity check (mock)
-      setTimeout(async () => {
-        // Randomly mark as safe or flagged for demo
-        const newStatus = Math.random() > 0.2 ? 'safe' : 'flagged';
-        video.status = newStatus;
-        await video.save();
-
-        io.to(req.user._id.toString()).emit('sensitivity:result', {
-          videoId: video._id,
-          status: newStatus,
-        });
-      }, 3000);
+      // Start sensitivity check in background
+      checkVideoSensitivity(video._id.toString(), req.file.path, req.user._id.toString(), io);
     }
 
     res.status(201).json({
@@ -84,6 +74,54 @@ export const uploadVideo = async (req: AuthRequest, res: Response): Promise<void
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+// Background sensitivity check
+async function checkVideoSensitivity(videoId: string, videoPath: string, userId: string, io: any) {
+  try {
+    console.log(`🔍 Starting sensitivity check for video ${videoId}`);
+    
+    // Import the service dynamically to avoid circular dependencies
+    const { default: googleVideoIntService } = await import('../services/google-video-intelligence.service');
+    
+    // Emit checking status
+    io.to(userId).emit('sensitivity:checking', {
+      videoId,
+      message: 'Analyzing video content...'
+    });
+
+    // Perform analysis
+    const result = await googleVideoIntService.analyzeVideo(videoPath);
+
+    // Update video status
+    const newStatus = result.isSafe ? 'safe' : 'flagged';
+    await VideoMetaInfo.findByIdAndUpdate(videoId, {
+      status: newStatus,
+    });
+
+    console.log(`✅ Sensitivity check complete for ${videoId}: ${newStatus}`);
+
+    // Notify client
+    io.to(userId).emit('sensitivity:result', {
+      videoId,
+      status: newStatus,
+      confidence: result.confidence,
+      labels: result.labels,
+    });
+  } catch (error) {
+    console.error('Sensitivity check error:', error);
+    
+    // Mark as safe if check fails (fail-open approach)
+    await VideoMetaInfo.findByIdAndUpdate(videoId, {
+      status: 'safe',
+    });
+
+    io.to(userId).emit('sensitivity:result', {
+      videoId,
+      status: 'safe',
+      error: 'Analysis failed, marked as safe by default',
+    });
+  }
+}
 
 // Get Library Videos
 export const getLibraryVideos = async (req: AuthRequest, res: Response): Promise<void> => {

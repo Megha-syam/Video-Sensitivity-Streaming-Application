@@ -54,11 +54,18 @@ export const authAPI = {
 
 // Video API
 export const videoAPI = {
-  uploadVideo: (formData: FormData) =>
-    api.post<{ message: string; video: Video }>('/videos/upload', formData, {
+  uploadVideo: (formData: FormData) => {
+    return api.post<{ message: string; video: Video }>('/videos/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+    });
+  },
   
+  uploadVideoWithProgress: (formData: FormData, onProgress: (progressEvent: any) => void) => {
+    return api.post<{ message: string; video: Video }>('/videos/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: onProgress,
+    });
+  },
   getLibraryVideos: (filter: 'all' | 'mine' | 'shared', page = 1, limit = 12) =>
     api.get<{ videos: Video[]; pagination: any }>('/videos/library', {
       params: { filter, page, limit },

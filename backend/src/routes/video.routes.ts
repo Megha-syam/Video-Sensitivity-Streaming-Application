@@ -16,15 +16,22 @@ import { validate } from '../middleware/validation.middleware';
 const router = Router();
 
 // Configure multer for video upload
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, 'video-' + uniqueSuffix + path.extname(file.originalname));
-  },
-});
+// Use Cloudinary in production, local storage in development
+import { storage as cloudinaryStorage } from '../config/cloudinary.config';
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+const storage = isDevelopment
+  ? multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+      },
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, 'video-' + uniqueSuffix + path.extname(file.originalname));
+      },
+    })
+  : cloudinaryStorage;
 
 const fileFilter = (req: any, file: any, cb: any) => {
   // Accept video files only

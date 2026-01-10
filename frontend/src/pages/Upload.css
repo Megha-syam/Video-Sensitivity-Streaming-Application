@@ -3,11 +3,6 @@
   margin: 0 auto;
 }
 
-.upload-page h1 {
-  margin: 0 0 30px 0;
-  color: #333;
-}
-
 .upload-form {
   background: white;
   padding: 30px;
@@ -16,15 +11,15 @@
 }
 
 .upload-form input[type="text"],
-.upload-form textarea,
-.upload-form input[type="file"] {
+.upload-form input[type="file"],
+.upload-form textarea {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 14px;
   font-family: inherit;
+  font-size: 14px;
 }
 
 .upload-form textarea {
@@ -33,7 +28,7 @@
 }
 
 .access-section {
-  margin: 25px 0;
+  margin: 20px 0;
   padding: 20px;
   background: #f9f9f9;
   border-radius: 8px;
@@ -45,32 +40,31 @@
   font-size: 16px;
 }
 
-.group-item {
+.access-section label {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   margin-bottom: 10px;
+}
+
+.access-section select {
+  margin-left: 10px;
+  padding: 6px 12px;
+  border: 2px solid #667eea;
+  border-radius: 6px;
+}
+
+.group-item {
+  margin-bottom: 15px;
   padding: 10px;
   background: white;
   border-radius: 6px;
 }
 
-.group-item label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.group-item select {
-  padding: 6px 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-
 .upload-form button {
   width: 100%;
-  padding: 14px;
-  background: #667eea;
+  padding: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -78,23 +72,62 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
+  margin-top: 20px;
 }
 
 .upload-form button:hover:not(:disabled) {
-  background: #5568d3;
   transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
 }
 
 .upload-form button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
+}
+
+.progress-container {
+  margin: 20px 0;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+  height: 30px;
+  background: #e0e0e0;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.progress-text {
+  text-align: center;
+  font-weight: 600;
+  color: #667eea;
+  font-size: 18px;
 }
 
 .status-message {
-  margin-top: 20px;
+  margin: 15px 0;
   padding: 15px;
-  background: #e7f3ff;
-  border-left: 4px solid #667eea;
-  border-radius: 6px;
-  color: #333;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 8px;
+  border-left: 4px solid #4caf50;
+  font-weight: 500;
 }

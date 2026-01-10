@@ -16,6 +16,7 @@ const UploadVideoPage: React.FC = () => {
   const [orgAccess, setOrgAccess] = useState({ enabled: false, role: 'viewer' as AccessRole });
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [sensitivityStatus, setSensitivityStatus] = useState('');
 
   useEffect(() => {
@@ -37,12 +38,32 @@ const UploadVideoPage: React.FC = () => {
   const setupSocketListeners = () => {
     socketService.onUploadComplete((data) => {
       setUploadStatus(`Video uploaded! Status: ${data.status}`);
-      setSensitivityStatus('Checking video sensitivity...');
+      setSensitivityStatus('🔍 Checking video sensitivity...');
+      setUploadProgress(100);
     });
 
-    socketService.onSensitivityResult((data) => {
-      setSensitivityStatus(`Video ${data.status === 'safe' ? '✅ Safe' : '⚠️ Flagged'}`);
+    socketService.onSensitivityResult((data: any) => {
+      const statusText = data.status === 'safe' ? '✅ Safe' : '⚠️ Flagged';
+      const confidenceText = data.confidence ? ` (${data.confidence}% confidence)` : '';
+      setSensitivityStatus(`Video ${statusText}${confidenceText}`);
       setUploading(false);
+      setUploadProgress(0);
+      
+      // Reset form after 2 seconds
+      setTimeout(() => {
+        setVideoName('');
+        setVideoDescription('');
+        setTags('');
+        setVideoFile(null);
+        setSelectedGroups([]);
+        setOrgAccess({ enabled: false, role: 'viewer' });
+        setUploadStatus('');
+        setSensitivityStatus('');
+        
+        // Reset file input
+        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+      }, 2000);
     });
   };
 
@@ -57,7 +78,8 @@ const UploadVideoPage: React.FC = () => {
     if (!videoFile) return;
 
     setUploading(true);
-    setUploadStatus('Uploading video...');
+    setUploadStatus('Preparing upload...');
+    setUploadProgress(0);
     setSensitivityStatus('');
 
     const formData = new FormData();
@@ -69,25 +91,21 @@ const UploadVideoPage: React.FC = () => {
     formData.append('groupAccess', JSON.stringify(selectedGroups.map(sg => ({ group: sg.groupId, role: sg.role }))));
 
     try {
-      const response = await videoAPI.uploadVideo(formData);
-      setUploadStatus('✅ Video uploaded successfully!');
-      setSensitivityStatus('🔍 Checking video sensitivity...');
+      // Track upload progress
+      await videoAPI.uploadVideoWithProgress(
+        formData,
+        (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
+          setUploadProgress(percentCompleted);
+          setUploadStatus(`Uploading... ${percentCompleted}%`);
+        }
+      );
       
-      // Auto-update status after 4 seconds if socket doesn't respond
-      setTimeout(() => {
-        setSensitivityStatus('✅ Video is safe and ready to view!');
-        setUploading(false);
-        // Reset form
-        setVideoName('');
-        setVideoDescription('');
-        setTags('');
-        setVideoFile(null);
-        setSelectedGroups([]);
-        setOrgAccess({ enabled: false, role: 'viewer' });
-      }, 4000);
+      setUploadStatus('✅ Upload complete! Processing...');
     } catch (err: any) {
       setUploadStatus('❌ Upload failed: ' + (err.response?.data?.message || err.message));
       setUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -178,6 +196,15 @@ const UploadVideoPage: React.FC = () => {
           {uploading ? 'Uploading...' : 'Upload Video'}
         </button>
       </form>
+
+      {uploadProgress > 0 && uploadProgress < 100 && (
+        <div className="progress-container">
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${uploadProgress}%` }}></div>
+          </div>
+          <div className="progress-text">{uploadProgress}%</div>
+        </div>
+      )}
 
       {uploadStatus && <div className="status-message">{uploadStatus}</div>}
       {sensitivityStatus && <div className="status-message">{sensitivityStatus}</div>}
