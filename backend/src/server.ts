@@ -22,10 +22,18 @@ dotenv.config();
 const app = express();
 const httpServer = createServer(app);
 
+// CORS configuration - allow both localhost and production
+const allowedOrigins: string[] = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://video-sensitivity-streaming-applica.vercel.app',
+  process.env.FRONTEND_URL || ''
+].filter(origin => origin.length > 0);
+
 // Initialize Socket.IO
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'https://video-sensitivity-streaming-applica.vercel.app',
+    origin: allowedOrigins,
     credentials: true,
   },
 });
@@ -36,7 +44,7 @@ app.set('io', io);
 // Middleware
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'https://video-sensitivity-streaming-applica.vercel.app',
+    origin: allowedOrigins,
     credentials: true,
   })
 );
