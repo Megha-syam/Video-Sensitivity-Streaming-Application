@@ -1,16 +1,16 @@
 .dashboard-layout {
   display: flex;
   height: 100vh;
-  background: #f5f7fa;
+  background: var(--bg-secondary);
 }
 
 .sidebar {
   width: 280px;
-  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   color: white;
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 10px rgba(15, 118, 110, 0.15);
 }
 
 .sidebar-header {
@@ -79,12 +79,14 @@
 
 .logout-btn:hover {
   background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
 .main-content {
   flex: 1;
   padding: 40px;
   overflow-y: auto;
+  background: var(--bg-primary);
 }
 
 .loading {
@@ -93,5 +95,6 @@
   justify-content: center;
   height: 100vh;
   font-size: 20px;
-  color: #667eea;
+  color: var(--primary-color);
 }
+
