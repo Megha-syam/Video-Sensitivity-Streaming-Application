@@ -3,24 +3,25 @@
 }
 
 :root {
-  /* Modern Teal/Emerald Color Palette */
-  --primary-color: #0f766e; /* Teal 700 */
-  --primary-light: #14b8a6; /* Teal 500 */
-  --primary-dark: #115e59; /* Teal 800 */
-  --secondary-color: #10b981; /* Emerald 500 */
-  --accent-color: #06b6d4; /* Cyan 500 */
+  /* Professional Monochrome/Slate Color Palette */
+  --primary-color: #1e293b; /* Slate 800 - Deep Navy */
+  --primary-light: #334155; /* Slate 700 */
+  --primary-dark: #0f172a; /* Slate 900 - Almost Black */
+  --secondary-color: #64748b; /* Slate 500 - Medium Gray */
+  --accent-color: #3b82f6; /* Blue 500 - Professional Blue Accent */
   
   /* Neutral Colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f0fdfa; /* Teal 50 */
-  --bg-tertiary: #ccfbf1; /* Teal 100 */
-  --text-primary: #0f172a; /* Slate 900 */
-  --text-secondary: #475569; /* Slate 600 */
-  --text-muted: #94a3b8; /* Slate 400 */
+  --bg-primary: #ffffff; /* Pure White */
+  --bg-secondary: #f8fafc; /* Slate 50 - Very Light Gray */
+  --bg-tertiary: #f1f5f9; /* Slate 100 - Light Gray */
+  --text-primary: #0f172a; /* Slate 900 - Almost Black */
+  --text-secondary: #475569; /* Slate 600 - Medium Gray */
+  --text-muted: #94a3b8; /* Slate 400 - Light Gray */
   
   /* Gradient */
-  --gradient-primary: linear-gradient(135deg, #0f766e 0%, #10b981 100%);
-  --gradient-secondary: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+  --gradient-primary: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --gradient-secondary: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+  --gradient-accent: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
 body {
@@ -42,4 +43,5 @@ body {
   color: var(--primary-color);
   background: var(--bg-secondary);
 }
+
 
