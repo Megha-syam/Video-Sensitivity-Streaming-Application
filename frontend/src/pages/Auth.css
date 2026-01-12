@@ -11,9 +11,10 @@
   background: white;
   padding: 40px;
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(15, 118, 110, 0.15);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.2);
   max-width: 500px;
   width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .auth-card h1 {
@@ -21,6 +22,7 @@
   color: var(--text-primary);
   text-align: center;
   font-size: 28px;
+  font-weight: 700;
 }
 
 .user-type-toggle {
@@ -48,7 +50,7 @@
 
 .user-type-toggle button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2);
+  box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15);
 }
 
 form {
@@ -59,16 +61,18 @@ form {
 
 input, select, textarea {
   padding: 12px 15px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 14px;
-  transition: border-color 0.3s;
+  transition: all 0.3s;
+  color: var(--text-primary);
+  background: var(--bg-primary);
 }
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--primary-light);
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 textarea {
@@ -93,7 +97,7 @@ button[type="submit"] {
 button[type="submit"]:hover:not(:disabled) {
   background: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(15, 118, 110, 0.3);
+  box-shadow: 0 8px 20px rgba(30, 41, 59, 0.25);
 }
 
 button[type="submit"]:disabled {
@@ -117,14 +121,14 @@ button[type="submit"]:disabled {
 }
 
 .auth-link a {
-  color: var(--primary-color);
+  color: var(--accent-color);
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s;
 }
 
 .auth-link a:hover {
-  color: var(--primary-light);
+  color: var(--primary-color);
   text-decoration: underline;
 }
 
