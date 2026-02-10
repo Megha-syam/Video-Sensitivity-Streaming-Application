@@ -23,6 +23,8 @@ const UploadVideoPage: React.FC = () => {
 
   useEffect(() => {
     if (!loading) {
+      console.log('Upload page - User data:', user); // Debug log
+      console.log('Upload page - User organization:', user?.organization); // Debug log
       loadGroups();
       setupSocketListeners();
     }
@@ -164,8 +166,8 @@ const UploadVideoPage: React.FC = () => {
         />
         <input type="file" accept="video/*" onChange={handleFileChange} required />
 
-        {user?.organization && (
-          <div className="access-section">
+        {!loading && user && user.organization && (
+          <div className="access-section" key={`org-section-${user.organization}`}>
             <h3>Organization Sharing</h3>
             <label>
               <input

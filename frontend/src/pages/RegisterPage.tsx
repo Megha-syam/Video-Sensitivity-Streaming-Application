@@ -10,6 +10,7 @@ const RegisterPage: React.FC = () => {
   const { registerUser, registerOrganization } = useAuth();
   const [userType, setUserType] = useState<'user' | 'organization'>('user');
   const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [organizationsLoading, setOrganizationsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -42,10 +43,15 @@ const RegisterPage: React.FC = () => {
 
   const loadOrganizations = async () => {
     try {
+      setOrganizationsLoading(true);
       const response = await userAPI.getAllOrganizations();
-      setOrganizations(response.data.organizations);
+      console.log('Loaded organizations:', response.data.organizations); // Debug log
+      setOrganizations(response.data.organizations || []);
     } catch (err) {
-      console.error('Failed to load organizations');
+      console.error('Failed to load organizations:', err);
+      setOrganizations([]); // Set empty array on error
+    } finally {
+      setOrganizationsLoading(false);
     }
   };
 
@@ -143,8 +149,11 @@ const RegisterPage: React.FC = () => {
             <select
               value={userForm.organization}
               onChange={(e) => setUserForm({ ...userForm, organization: e.target.value })}
+              key={`org-select-${organizations.length}`}
             >
-              <option value="">No Organization</option>
+              <option value="">
+                {organizationsLoading ? 'Loading organizations...' : 'No Organization'}
+              </option>
               {organizations.map((org) => (
                 <option key={org._id} value={org._id}>
                   {org.name}
